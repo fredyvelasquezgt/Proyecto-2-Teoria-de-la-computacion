@@ -1,1 +1,1 @@
-# Proyecto CYK usand una CFG para generar el parse-tree
+# Proyecto CYK usando una CFG para generar el parse-tree
