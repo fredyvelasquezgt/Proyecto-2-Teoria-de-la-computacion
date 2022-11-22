@@ -3,6 +3,7 @@ sys.path.insert(0, "./src")
 
 from get_grammar import read_grammar
 
+
 #Creates a (Tree) Node for each nonterminal, with respect to the word in the sentence
 class Node:
     def __init__(self, nonterm=None, start=None, end=None, word=None, left_node=None, right_Node=None, probability=0):
