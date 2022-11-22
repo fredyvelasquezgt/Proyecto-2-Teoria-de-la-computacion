@@ -14,7 +14,7 @@ class Node:
         self.right = right_Node
         self.prob = probability
 
-# Creates a NxN matrix of Nodes
+# Crea una matriz de nodos de NxN
 
 
 def create_matrix(n):
@@ -22,15 +22,15 @@ def create_matrix(n):
 
 
 '''
-Three-indexed data structure to allow for storing and retrieval of Nodes used in the parsing of the sentence.
-Represents the Bottom-up CYK-Parse Tree of the sentence. 
+Estructura de datos de tres índices para permitir el almacenamiento y la recuperación de nodos utilizados en el análisis de oraciones.
+Representa el árbol de análisis CYK ascendente de la oración.
 '''
 
 
 class Chart:
-    # Map storing each Nonterminal of the sentence, used to retrieve and set the Tree for each word
+    # Mapa que almacena cada no terminal de la oración, utilizado para recuperar y configurar el árbol para cada palabra
     data = {}
-    # Initializes the Chart with an empty NxN matrix that stores the CYK-Parse tree of the sentence
+    # Inicializa el gráfico con una matriz NxN vacía que almacena el árbol CYK-Parse de la oración
 
     def __init__(self, nonterms):
         n = len(nonterms)
@@ -39,18 +39,18 @@ class Chart:
         for nonterm in nonterms:
             self.data[nonterm.p_nont] = create_matrix(n)
 
-    # Allows for the 3-indexing of the data structure, overrides the [] operator
+    # Permite la indexación de 3 de la estructura de datos, anula el operador []
     def __getitem__(self, key):
         nonterminal_pos, first_index, second_index = key
         return self.data[nonterminal_pos][first_index][second_index]
 
-    # Allows for the 3-indexing of the data structure, overrides the [] operator
+    # Permite la indexación de 3 de la estructura de datos, anula el operador []
     def __setitem__(self, key, value):
         nonterminal_pos, first_index, second_index = key
         self.data[nonterminal_pos][first_index][second_index] = value
 
-    # Prints the Chart, Calls recursive method `display` on the top CYK-Parse Tree node, S.
-    # Displays the Tree structure of the parsed sentence, allong with the probability of the parse of the sentence.
+    # Imprime el gráfico, llama al método recursivo `display` en el nodo superior CYK-Parse Tree, S.
+    # Muestra la estructura de árbol de la oración analizada, junto con la probabilidad del análisis de la oración.
     def printChart(self, end):
         tree = self.data["S"][0][end-1]
         if tree.left == None and tree.right == None:
@@ -72,14 +72,15 @@ class Chart:
 
 
 '''
-    Parses a sentence in Chomsky-Normal using the CYK-Parse algorithm, based on a given grammar.
+    
+Analiza una oración en Chomsky-Normal usando el algoritmo CYK-Parse, basado en una gramática dada.
 '''
 
 
 def cyk_parse(sentence, grammar):
-    # Breaks the sentence into a list of words
+    # Divide la oración en una lista de palabras.
     words_in_sentence = sentence.strip().lower().split()
-    P = Chart(grammar.get_rules())  # Creates a Chart of the sentence
+    P = Chart(grammar.get_rules())  # crea una tabla para cada oracion
     n = len(words_in_sentence)
 
     # Populate the Chart with Tree nodes represnting the possible trees for each word
