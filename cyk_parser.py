@@ -83,7 +83,7 @@ def cyk_parse(sentence, grammar):
     P = Chart(grammar.get_rules())  # crea una tabla para cada oracion
     n = len(words_in_sentence)
 
-    # Populate the Chart with Tree nodes represnting the possible trees for each word
+    # Rellena el gráfico con nodos de árbol que representen los árboles posibles para cada palabra
     for i, word in enumerate(words_in_sentence):
         for wrule in grammar.word_rules:
             if wrule.p_nont != word:
@@ -93,8 +93,8 @@ def cyk_parse(sentence, grammar):
                     wrule.pos, i, i, word, None, None, wrule.prob)
 
     '''
-    Loops O(N^3) times calculating the maximum probability of each word in the sentence based on it's previously created
-    tree and calculates the probability of the meaning of the overall sentence. 
+Bucles O (N ^ 3) veces calculando la probabilidad máxima de cada palabra en la oración en función de su creación previa
+    árbol y calcula la probabilidad del significado de la oración en general.
     '''
     for length in range(1, n):
         for i in range(n-length):
@@ -115,7 +115,7 @@ def cyk_parse(sentence, grammar):
 
 
 if __name__ == "__main__":
-    grammar = read_grammar()  # Reads and parses the grammar from file.
+    grammar = read_grammar()  # Lee y analiza la gramática del archivo.
     with open("input/cyk_sentences.txt", "r") as fp:
         for line in fp:
             parse_chart, num_words = cyk_parse(line, grammar)
