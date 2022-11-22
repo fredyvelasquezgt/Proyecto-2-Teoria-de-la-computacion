@@ -1,10 +1,9 @@
+from get_grammar import read_grammar
 import sys
 sys.path.insert(0, "./src")
 
-from get_grammar import read_grammar
 
-
-#Creates a (Tree) Node for each nonterminal, with respect to the word in the sentence
+# Crea un arbol de nodos para cada no-terminal con respecto a la palabra en la oracion
 class Node:
     def __init__(self, nonterm=None, start=None, end=None, word=None, left_node=None, right_Node=None, probability=0):
         self.nonterm = nonterm
@@ -15,18 +14,24 @@ class Node:
         self.right = right_Node
         self.prob = probability
 
-#Creates a NxN matrix of Nodes
+# Creates a NxN matrix of Nodes
+
+
 def create_matrix(n):
     return [[Node() for _ in range(n)] for _ in range(n)]
+
 
 '''
 Three-indexed data structure to allow for storing and retrieval of Nodes used in the parsing of the sentence.
 Represents the Bottom-up CYK-Parse Tree of the sentence. 
 '''
+
+
 class Chart:
-    #Map storing each Nonterminal of the sentence, used to retrieve and set the Tree for each word
+    # Map storing each Nonterminal of the sentence, used to retrieve and set the Tree for each word
     data = {}
-    #Initializes the Chart with an empty NxN matrix that stores the CYK-Parse tree of the sentence
+    # Initializes the Chart with an empty NxN matrix that stores the CYK-Parse tree of the sentence
+
     def __init__(self, nonterms):
         n = len(nonterms)
         for k in ["Noun", "Verb", "Prep"]:
@@ -34,9 +39,9 @@ class Chart:
         for nonterm in nonterms:
             self.data[nonterm.p_nont] = create_matrix(n)
 
-    #Allows for the 3-indexing of the data structure, overrides the [] operator
+    # Allows for the 3-indexing of the data structure, overrides the [] operator
     def __getitem__(self, key):
-        nonterminal_pos,first_index, second_index = key
+        nonterminal_pos, first_index, second_index = key
         return self.data[nonterminal_pos][first_index][second_index]
 
     # Allows for the 3-indexing of the data structure, overrides the [] operator
@@ -44,8 +49,8 @@ class Chart:
         nonterminal_pos, first_index, second_index = key
         self.data[nonterminal_pos][first_index][second_index] = value
 
-    #Prints the Chart, Calls recursive method `display` on the top CYK-Parse Tree node, S.
-    #Displays the Tree structure of the parsed sentence, allong with the probability of the parse of the sentence.
+    # Prints the Chart, Calls recursive method `display` on the top CYK-Parse Tree node, S.
+    # Displays the Tree structure of the parsed sentence, allong with the probability of the parse of the sentence.
     def printChart(self, end):
         tree = self.data["S"][0][end-1]
         if tree.left == None and tree.right == None:
@@ -56,7 +61,8 @@ class Chart:
 
     def display(self, tree, indent=0):
         if tree != None:
-            for i in range(indent): print(" ", end='')
+            for i in range(indent):
+                print(" ", end='')
             print(tree.nonterm, end=' ')
             if tree.word != None:
                 print(tree.word, end=' ')
@@ -64,21 +70,26 @@ class Chart:
             self.display(tree.left, indent+3)
             self.display(tree.right, indent+3)
 
+
 '''
     Parses a sentence in Chomsky-Normal using the CYK-Parse algorithm, based on a given grammar.
 '''
+
+
 def cyk_parse(sentence, grammar):
-    words_in_sentence = sentence.strip().lower().split() #Breaks the sentence into a list of words
-    P = Chart(grammar.get_rules()) #Creates a Chart of the sentence
+    # Breaks the sentence into a list of words
+    words_in_sentence = sentence.strip().lower().split()
+    P = Chart(grammar.get_rules())  # Creates a Chart of the sentence
     n = len(words_in_sentence)
 
-    #Populate the Chart with Tree nodes represnting the possible trees for each word
+    # Populate the Chart with Tree nodes represnting the possible trees for each word
     for i, word in enumerate(words_in_sentence):
         for wrule in grammar.word_rules:
             if wrule.p_nont != word:
                 continue
             else:
-                P[wrule.pos, i,i] = Node(wrule.pos, i, i, word, None, None, wrule.prob)
+                P[wrule.pos, i, i] = Node(
+                    wrule.pos, i, i, word, None, None, wrule.prob)
 
     '''
     Loops O(N^3) times calculating the maximum probability of each word in the sentence based on it's previously created
@@ -88,23 +99,25 @@ def cyk_parse(sentence, grammar):
         for i in range(n-length):
             j = i + length  # type: int
             for nonterm in grammar.get_rules():
-                P[nonterm.p_nont, i, j] = Node(nonterm.p_nont, i, j, None, None, None, 0)
+                P[nonterm.p_nont, i, j] = Node(
+                    nonterm.p_nont, i, j, None, None, None, 0)
                 for k in range(i, j):
                     for nrule in grammar.nonterminal_rules:
-                        new_prob = P[nrule.fnonterm, i, k].prob * P[nrule.snonterm, k+1, j].prob * nrule.prob
+                        new_prob = P[nrule.fnonterm, i, k].prob * \
+                            P[nrule.snonterm, k+1, j].prob * nrule.prob
                         if new_prob > P[nonterm.p_nont, i, j].prob:
                             P[nonterm.p_nont, i, j].left = P[nrule.fnonterm, i, k]
                             P[nonterm.p_nont, i, j].right = P[nrule.snonterm, k+1, j]
                             P[nonterm.p_nont, i, j].prob = new_prob
 
-    return (P,n)
+    return (P, n)
 
 
 if __name__ == "__main__":
-    grammar = read_grammar() #Reads and parses the grammar from file.
+    grammar = read_grammar()  # Reads and parses the grammar from file.
     with open("input/cyk_sentences.txt", "r") as fp:
         for line in fp:
             parse_chart, num_words = cyk_parse(line, grammar)
-            print("Sentence: %s\nParse Tree: "%line)
+            print("Sentence: %s\nParse Tree: " % line)
             parse_chart.printChart(num_words)
             print("-------------------------------------------------------------------\n")
