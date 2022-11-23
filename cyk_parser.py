@@ -1,9 +1,11 @@
-from get_grammar import read_grammar
 import sys
 sys.path.insert(0, "./src")
 
+from get_grammar import read_grammar
 
 # Crea un arbol de nodos para cada no-terminal con respecto a la palabra en la oracion
+
+
 class Node:
     def __init__(self, nonterm=None, start=None, end=None, word=None, left_node=None, right_Node=None, probability=0):
         self.nonterm = nonterm
@@ -54,10 +56,10 @@ class Chart:
     def printChart(self, end):
         tree = self.data["S"][0][end-1]
         if tree.left == None and tree.right == None:
-            print("This sentence cannot be parsed.")
+            print("No puede ser parseada.")
         else:
             self.display(tree)
-        print("Probability = ", format(tree.prob))
+        #print("Probability = ", format(tree.prob))
 
     def display(self, tree, indent=0):
         if tree != None:
@@ -119,6 +121,6 @@ if __name__ == "__main__":
     with open("input/cyk_sentences.txt", "r") as fp:
         for line in fp:
             parse_chart, num_words = cyk_parse(line, grammar)
-            print("Sentence: %s\nParse Tree: " % line)
+            print("Oracion: %s\nParse Tree: " % line)
             parse_chart.printChart(num_words)
             print("-------------------------------------------------------------------\n")
