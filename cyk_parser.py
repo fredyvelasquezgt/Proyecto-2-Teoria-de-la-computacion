@@ -1,4 +1,5 @@
 import sys
+import time
 sys.path.insert(0, "./src")
 
 from get_grammar import read_grammar
@@ -34,6 +35,8 @@ class Chart:
     # Mapa que almacena cada no terminal de la oración, utilizado para recuperar y configurar el árbol para cada palabra
     data = {}
     # Inicializa el gráfico con una matriz NxN vacía que almacena el árbol CYK-Parse de la oración
+    start = time.time()
+
 
     def __init__(self, nonterms):
         n = len(nonterms)
@@ -72,6 +75,9 @@ class Chart:
             print()
             self.display(tree.left, indent+3)
             self.display(tree.right, indent+3)
+
+    end = time.time()
+    print(end - start)
 
 
 '''

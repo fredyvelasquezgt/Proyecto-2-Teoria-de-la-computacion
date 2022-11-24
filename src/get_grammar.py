@@ -1,14 +1,10 @@
-'''Class that represents the 'POS -> Word[prob]' grammatical rule of the grammar.'''
 class WordRule:
-    #Stores the word (p_nont), part of speech (pos) and probability of each word rule.
     def __init__(self, parent_nont, part_of_speech, probability):
         self.p_nont = parent_nont
         self.prob = probability
         self.pos = part_of_speech
 
-'''
-Class that represents the 'NonTerminal -> Nonterminal, Nonterminal [prob]' grammatical rule of the predefined grammar
-'''
+
 class NonTerminalRule:
        def __init__(self, parent_nont, first_term, second_term, prob):
            self.p_nont = parent_nont
@@ -16,23 +12,20 @@ class NonTerminalRule:
            self.snonterm = second_term
            self.prob = prob
 
-'''Class that stores the entirety of the predefined grammar rules'''
 class Grammar:
-    word_rules = [] # type: List[WordRule]
-    nonterminal_rules = [] #type: List[NonTerminalRule]
+    word_rules = [] 
+    nonterminal_rules = [] 
 
     def get_rules(self):
         return self.nonterminal_rules+self.word_rules
 
-#Reads the grammar necessary to parsing the sentence from file (grammar.txt) and returns a Grammar object containing all of it
 def read_grammar(input="input/grammar.txt"):
     grammar = Grammar()
     is_nonterminal_rules = True
     with open(input, "r") as fp:
         rules = []
         for line in fp:
-            #The different rules of the grammar are separated by a blank newline,
-            #therefore if one is encountered then the word rules are being read.
+            
             if line == "\n":
                 grammar.nonterminal_rules = rules
                 rules = []
