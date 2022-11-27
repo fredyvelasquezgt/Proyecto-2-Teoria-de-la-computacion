@@ -2,6 +2,7 @@ import sys
 import time
 sys.path.insert(0, "./src")
 
+
 from get_grammar import read_grammar
 
 
